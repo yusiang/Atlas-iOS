@@ -55,7 +55,7 @@ task :init do
 end
 
 if defined?(XCTasks)
-  XCTasks::TestTask.new(test: :sim) do |t|
+  XCTasks::TestTask.new do |t|
     t.workspace = 'Atlas.xcworkspace'
     t.schemes_dir = 'Tests/Schemes'
     t.runner = :xcpretty
@@ -63,8 +63,8 @@ if defined?(XCTasks)
     t.subtask(app: 'ProgrammaticTests') do |s|
       s.destination do |d|
         d.platform = :iossimulator
-        d.name = 'Atlas-Test-Device'
         d.os = :latest
+        d.name = 'iPhone 6 Plus'
       end
     end    
   end
@@ -73,23 +73,6 @@ end
 desc "Initialize the project for build and test with Travis-CI"
 task :travis do
   
-end
-
-desc "Creates a Testing Simulator configured for Atlas Testing"
-task :sim do
-  # Check if LayerUIKit Test Device Exists
-  device = `xcrun simctl list | grep Atlas-Test-Device`
-  if $?.exitstatus.zero?
-    puts ("Found Atlas Test Device #{device}")
-    device.each_line do |line|
-      if device_id = line.match(/\(([^\)]+)/)[1]
-        puts green ("Deleting device with ID #{device_id}")
-        run ("xcrun simctl delete #{device_id}")
-      end
-    end
-  end
-  puts green ("Creating iOS simulator for Atlas Testing")
-  run("xcrun simctl create Atlas-Test-Device com.apple.CoreSimulator.SimDeviceType.iPhone-6 com.apple.CoreSimulator.SimRuntime.iOS-8-1")
 end
 
 desc "Prints the current version of Atlas"
