@@ -256,8 +256,8 @@ typedef NS_ENUM(NSInteger, ATLBubbleViewContentType) {
 {
     if ([recognizer state] == UIGestureRecognizerStateBegan) {
         
-        if ([[UIResponder currentFirstResponder] isKindOfClass:[ATLMessageComposeTextView class]]) {
-            self.weakTextView = (ATLMessageComposeTextView *)[UIResponder currentFirstResponder];
+        if ([[UIResponder atlCurrentFirstResponder] isKindOfClass:[ATLMessageComposeTextView class]]) {
+            self.weakTextView = (ATLMessageComposeTextView *)[UIResponder atlCurrentFirstResponder];
             self.weakTextView.overrideNextResponder = self;
         } else {
             [self becomeFirstResponder];
