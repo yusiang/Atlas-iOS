@@ -267,7 +267,6 @@ typedef NS_ENUM(NSInteger, ATLBubbleViewContentType) {
                                                  selector:@selector(menuControllerDisappeared)
                                                      name:UIMenuControllerDidHideMenuNotification
                                                    object:nil];
-
         
         self.longPressMask = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         self.longPressMask.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
