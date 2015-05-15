@@ -175,6 +175,13 @@
 @property (nonatomic) LYRConversation *conversation;
 
 /**
+ @abstract The `LYRQuery` object used to fetch messages displayed in the controller.
+ @discussion The `queryableClass` for the query must be `LYRMessage` class.
+ @raises `NSInternalInconsistency` exception if the `queryableClass` is anything other than `LYRMessage`.
+ */
+@property (nonatomic) LYRQuery *query;
+
+/**
  @abstract The `ATLConversationViewControllerDelegate` class informs the receiver to specific events that occurred within the controller.
  */
 @property (nonatomic, weak) id<ATLConversationViewControllerDelegate> delegate;

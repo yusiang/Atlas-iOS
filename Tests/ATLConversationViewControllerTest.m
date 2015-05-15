@@ -353,6 +353,21 @@ extern NSString *const ATLMessageInputToolbarSendButton;
     [delegateMock verify];
 }
 
+- (void)testSettingCustomQueryForController
+{
+    LYRQuery *query = [LYRQuery queryWithQueryableClass:[LYRMessage class]];
+    query.predicate = [LYRPredicate predicateWithProperty:@"isUnread" predicateOperator:LYRPredicateOperatorIsEqualTo value:@(YES)];
+    
+    [self setupConversationViewController];
+    self.viewController.query = query;
+    
+    [self setRootViewController:self.viewController];
+    
+    [tester enterText:@"test" intoViewWithAccessibilityLabel:ATLMessageInputToolbarTextInputView];
+    [tester tapViewWithAccessibilityLabel:ATLMessageInputToolbarSendButton];
+    [tester waitForViewWithAccessibilityLabel:@"Test"];
+}
+
 - (void)setupConversationViewController
 {
     self.viewController = [ATLSampleConversationViewController conversationViewControllerWithLayerClient:(LYRClient *)self.testInterface.layerClient];

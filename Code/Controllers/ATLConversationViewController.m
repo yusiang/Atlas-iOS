@@ -186,10 +186,30 @@ static NSString *const ATLPushNotificationSoundName = @"layerbell.caf";
     [self.collectionView setContentOffset:[self bottomOffsetForContentSize:contentSize] animated:NO];
 }
 
+- (void)setQuery:(LYRQuery *)query
+{
+    if (query.queryableClass != [LYRMessage class]) {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Queryable class must be `LYRMessage` class." userInfo:nil];
+    }
+    if (_query) {
+        self.conversationDataSource.queryController.delegate = nil;
+        self.conversationDataSource = nil;
+        [self.collectionView reloadData];
+    }
+    _query = query;
+    [self fetchLayerMessages];
+}
+
 - (void)fetchLayerMessages
 {
     if (!self.conversation) return;
-    self.conversationDataSource = [ATLConversationDataSource dataSourceWithLayerClient:self.layerClient conversation:self.conversation];
+    
+    if (!self.query) {
+        self.query = [LYRQuery queryWithQueryableClass:[LYRMessage class]];
+        self.query.predicate = [LYRPredicate predicateWithProperty:@"conversation" predicateOperator:LYRPredicateOperatorIsEqualTo value:self.conversation];
+        self.query.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"position" ascending:YES]];
+    }
+    self.conversationDataSource = [ATLConversationDataSource dataSourceWithLayerClient:self.layerClient query:self.query];
     self.conversationDataSource.queryController.delegate = self;
     self.showingMoreMessagesIndicator = [self.conversationDataSource moreMessagesAvailable];
     [self.collectionView reloadData];
