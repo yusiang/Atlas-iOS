@@ -46,7 +46,7 @@ typedef NS_ENUM(NSInteger, ATLBubbleViewContentType) {
 @property (nonatomic) NSLayoutConstraint *imageWidthConstraint;
 @property (nonatomic) MKMapSnapshotter *snapshotter;
 @property (nonatomic) ATLProgressView *progressView;
-//@property (nonatomic, weak) ATLMessageComposeTextView *weakTextView;
+@property (nonatomic, weak) ATLMessageComposeTextView *weakTextView;
 
 @end
 
@@ -239,7 +239,7 @@ typedef NS_ENUM(NSInteger, ATLBubbleViewContentType) {
 
 - (void)menuControllerDisappeared
 {
-    //self.weakTextView.overrideNextResponder = nil;
+    self.weakTextView.overrideNextResponder = nil;
     [self.longPressMask removeFromSuperview];
     self.longPressMask = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -256,20 +256,18 @@ typedef NS_ENUM(NSInteger, ATLBubbleViewContentType) {
 {
     if ([recognizer state] == UIGestureRecognizerStateBegan) {
         
-        //[[NSNotificationCenter defaultCenter] postNotificationName:@"testnate" object:self];
+        if ([[UIResponder currentFirstResponder] isKindOfClass:[ATLMessageComposeTextView class]]) {
+            self.weakTextView = (ATLMessageComposeTextView *)[UIResponder currentFirstResponder];
+            self.weakTextView.overrideNextResponder = self;
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(menuControllerDisappeared)
+                                                         name:UIMenuControllerDidHideMenuNotification
+                                                       object:nil];
+
+        } else {
+            [self becomeFirstResponder];
+        }
         
-//        if ([[UIResponder currentFirstResponder] isKindOfClass:[ATLMessageComposeTextView class]]) {
-//            self.weakTextView = (ATLMessageComposeTextView *)[UIResponder currentFirstResponder];
-//            self.weakTextView.overrideNextResponder = self;
-//            [[NSNotificationCenter defaultCenter] addObserver:self
-//                                                     selector:@selector(menuControllerDisappeared)
-//                                                         name:UIMenuControllerDidHideMenuNotification
-//                                                       object:nil];
-//
-//        } else {
-//            [self becomeFirstResponder];
-//        }
-                
         self.longPressMask = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         self.longPressMask.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.longPressMask.backgroundColor = [UIColor blackColor];
